@@ -1,21 +1,41 @@
 package com.example.bookmyshow.services;
 
+import com.example.bookmyshow.exception.InvalidArgumentException;
 import com.example.bookmyshow.exception.SeatsUnavailableException;
 import com.example.bookmyshow.models.*;
+import com.example.bookmyshow.repositiory.BookingRepositiory;
+import com.example.bookmyshow.repositiory.ShowRepositiory;
 import com.example.bookmyshow.repositiory.ShowSeatRepositiory;
+import com.example.bookmyshow.repositiory.UserRepositiory;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class BookingService {
 
     ShowSeatRepositiory showSeatRepositiory;
-    public BookingService() {
-        this.showSeatRepositiory = new ShowSeatRepositiory();
+    UserRepositiory userRepositiory;
+    ShowRepositiory showRepositiory;
+    BookingRepositiory bookingRepositiory;
+    public BookingService(ShowSeatRepositiory showSeatRepositiory, UserRepositiory userRepositiory,
+                          ShowRepositiory showRepositiory, BookingRepositiory bookingRepositiory) {
+        this.userRepositiory = userRepositiory;
+        this.showSeatRepositiory = showSeatRepositiory;
+        this.showRepositiory = showRepositiory;
+        this.bookingRepositiory = bookingRepositiory;
     }
-    public Booking bookTicket(User bookedBy, List<Long> showSeatsId, Show show) throws SeatsUnavailableException {
+    public Booking bookTicket(Long bookedById, List<Long> showSeatsId, Long showId) throws SeatsUnavailableException, InvalidArgumentException {
+        // first take user from userID
         // first take lock over the seats
-        //
+        Optional<User> userOptional = userRepositiory.getUserById(bookedById);
+        if(userOptional.isEmpty()) {
+            throw new InvalidArgumentException("User with id:" + bookedById + "doesn't exist");
+        }
+
+        Show show = showRepositiory.getShowById(showId);
         List<ShowSeat> currentShowSeats = new ArrayList<>();
         boolean didGetAllLocks = true;
         int count = 0;
@@ -62,13 +82,13 @@ public class BookingService {
         booking.setShow(show);
         booking.setAmount(amount);
         booking.setStatus(BookingStatus.PENDING);
+        booking.setBookedby(userOptional.get());
+        bookingRepositiory.save(booking);
 
         for(ShowSeat showSeat : currentShowSeats) {
             showSeatRepositiory.unlockShowSeat(showSeat.getId());
         }
 
-
-
-        return null;
+        return booking;
     }
 }

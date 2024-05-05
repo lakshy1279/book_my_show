@@ -9,6 +9,6 @@ import java.util.List;
 public class Movie extends BaseModel{
     private String name;
     private String genre;
-    private int rating;
+    private Integer rating;
     private List<Cast> casts;
 }

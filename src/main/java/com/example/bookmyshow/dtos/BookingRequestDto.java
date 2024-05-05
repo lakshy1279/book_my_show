@@ -11,6 +11,6 @@ import java.util.List;
 @Setter
 public class BookingRequestDto {
     private List<Long> showSeatIds;
-    private User bookedBy;
-    Show show;
+    private Long bookedById;
+    private Long showId;
 }

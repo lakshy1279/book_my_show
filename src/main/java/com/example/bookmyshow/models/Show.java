@@ -8,10 +8,10 @@ import java.util.List;
 @Getter
 @Setter
 public class Show extends BaseModel{
-    private String showName;
     private Movie movie;
     private Date startTime;
-    private Date endTime;
+    private Integer duration;
+    private Auditorium auditorium;
     private List<ShowSeat> seats;
     private List<ShowSeatType> showSeatTypes;
     private Language language;

@@ -7,5 +7,4 @@ import lombok.Setter;
 @Setter
 public class Cast extends BaseModel {
     private String name;
-
 }

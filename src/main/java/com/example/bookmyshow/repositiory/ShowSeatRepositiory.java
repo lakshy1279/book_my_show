@@ -1,11 +1,12 @@
 package com.example.bookmyshow.repositiory;
 
 import com.example.bookmyshow.models.ShowSeat;
+import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Repository
 public class ShowSeatRepositiory {
     Map<Long, ShowSeat> showSeatsMap = new ConcurrentHashMap<>();
     Map<Long, Integer> isShowSeatLocked = new ConcurrentHashMap<>();
